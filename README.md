@@ -2,11 +2,11 @@
 
 ## Team Members
 
-Jay Brahmbhatt - Journal ![JayProgress](Journals/Jay/JayProgress.md)
-Daniel Saneel
-Quang Nguyen
-Prem Dhar
-Varun Reddy Mallepally
+<br Daniel Saneel />
+<br Jay Brahmbhatt - Journal ![JayProgress](Journals/Jay/JayProgress.md) />
+<br Prem Dhar />
+<br Quang Nguyen />
+<br Varun Reddy Mallepally />
 
 ## Architechture Diagram
 
