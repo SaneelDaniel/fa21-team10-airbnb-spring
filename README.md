@@ -2,7 +2,7 @@
 
 ## Team Members
 
-Jay Brahmbhatt - Journal ![Jay Progress](Journals/Jay/JayProgress.md)
+Jay Brahmbhatt - Journal ![JayProgress](Journals/Jay/JayProgress.md)
 Daniel Saneel
 Quang Nguyen
 Prem Dhar
