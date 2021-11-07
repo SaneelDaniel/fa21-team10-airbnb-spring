@@ -3,7 +3,7 @@
 ## Team Members
 
 - Daniel Saneeli
-- Jay Brahmbhatt - Journal [JayProgress](Journals/Jay/JayProgress.md)
+- Jay Brahmbhatt - [Journal](Journals/Jay/JayProgress.md)
 - Prem Dhar
 - Quang Nguyen
 - Varun Reddy Mallepally
