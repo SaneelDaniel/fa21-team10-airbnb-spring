@@ -2,6 +2,8 @@ package com.example.airbnbbackend;
 
 import com.example.airbnbbackend.models.AuthenticationRequest;
 import com.example.airbnbbackend.models.AuthenticationResponse;
+import com.example.airbnbbackend.models.User;
+import com.example.airbnbbackend.models.UserRepository;
 import com.example.airbnbbackend.util.JwtUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,9 @@ public class HomeController {
     @Autowired
     private JwtUtil jwtTokenUtil;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @RequestMapping("/")
     public String home() {
         return "HELLO WORLD";
@@ -48,5 +53,15 @@ public class HomeController {
         final String jwt = jwtTokenUtil.generateToken(userDetails);
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
+
+    @RequestMapping(value="/register" , method = RequestMethod.POST)
+    public ResponseEntity<?> RegisterUser(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+        User user = userRepository.save(new User(authenticationRequest));
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+        final String jwt = jwtTokenUtil.generateToken(userDetails);
+        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+    }
+
+
 
 }
