@@ -37,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.example.airbnbpayments.PaymentsRepository;
 import com.example.airbnbpayments.bookingdetail.*;
+import com.example.airbnbpayments.cybersource.*;
 
 /**
  * The REST Controller Class for the payments service
@@ -55,6 +56,19 @@ public class PaymentsController {
     @Autowired
     private tempModelRepository tempRepository;
 
+    private static boolean DEBUG = true;
+
+    @Value("${cybersource.apihost}")
+    private String apiHost;
+    @Value("${cybersource.merchantkeyid}")
+    private String merchantKeyId;
+    @Value("${cybersource.merchantsecretkey}")
+    private String merchantsecretKey;
+    @Value("${cybersource.merchantid}")
+    private String merchantId;
+
+    private CyberSourceAPI api = new CyberSourceAPI();
+
     @RequestMapping("/")
     public ResponseEntity<?> getAction() {
         return ResponseEntity.ok("Hello From Payments");
@@ -67,19 +81,108 @@ public class PaymentsController {
     }
 
     // post mapping for the payments service
-    @PostMapping("/payments")
+    @PostMapping("/booking")
     public ResponseEntity<?> postAction(@RequestBody BookingModel body) {
-        log.info("PaymentsController.postAction()");
-        // log.info("body: {}", body.getFirstname());
-
-        // verify the body to have all the required fields
-        // if (body.getFirstname() == null || body.getLastname() == null) {
-        // return ResponseEntity.badRequest().body("Missing required fields");
-        // }
 
         // save the tempModel to the database and return the id
         BookingModel temp = bookingDetailRepository.save(body);
         return ResponseEntity.ok(temp.getId());
+    }
+
+    // post action to add a new payment
+    @PostMapping("/payments")
+    public ResponseEntity<?> postPayment(@RequestBody PaymentModel body) {
+        // save the payment to the database and return the id
+
+        // setup cybersource api
+        CyberSourceAPI.setHost(apiHost);
+        CyberSourceAPI.setKey(merchantKeyId);
+        CyberSourceAPI.setSecret(merchantsecretKey);
+        CyberSourceAPI.setMerchant(merchantId);
+
+        boolean hasErrors = verifyPaymentDetails(body);
+
+        PaymentModel temp = paymentsRepository.save(body);
+        return ResponseEntity.ok(temp.getId());
+    }
+
+    /**
+     * Helper Function to verify all payment Details
+     * 
+     * @return boolean
+     */
+    private boolean verifyPaymentDetails(PaymentModel command) {
+        // check if the payment is valid
+        CityAndStatesMapped cityStateMap = new CityAndStatesMapped();
+        boolean hasErrors = false;
+        if (command.getFirstname().equals("")) {
+            hasErrors = true;
+
+        }
+        if (command.getLastname().equals("")) {
+            hasErrors = true;
+
+        }
+        if (command.getAddress().equals("")) {
+            hasErrors = true;
+
+        }
+        if (command.getCity().equals("")) {
+            hasErrors = true;
+
+        }
+        if (command.getState().equals("")) {
+            hasErrors = true;
+
+        }
+        if (command.getZip().equals("")) {
+            hasErrors = true;
+
+        }
+        if (command.getPhonenumber().equals("")) {
+            hasErrors = true;
+        }
+        if (command.getCardnumber().equals("")) {
+            hasErrors = true;
+        }
+        if (command.getExpmonth().equals("")) {
+            hasErrors = true;
+        }
+        if (command.getExpyear().equals("")) {
+            hasErrors = true;
+        }
+        if (command.getCvv().equals("")) {
+            hasErrors = true;
+        }
+        if (command.getEmail().equals("")) {
+            hasErrors = true;
+        }
+
+        if (!command.getZip().matches("\\d{5}")) {
+            hasErrors = true;
+        }
+        if (!command.getPhonenumber().matches("[(]\\d{3}[)] \\d{3}-\\d{4}")) {
+            hasErrors = true;
+        }
+        if (!command.getCvv().matches("\\d{3}")) {
+            hasErrors = true;
+        }
+        if (!command.getCardnumber().matches("((?:(?:\\d{4}[- ]){3}\\d{4}|\\d{16}))(?![\\d])")) {
+            hasErrors = true;
+        }
+        if (!command.getExpyear().matches("\\d{4}")) {
+            hasErrors = true;
+        }
+
+        if (cityStateMap.months.get(command.getExpmonth()) == null) {
+            hasErrors = true;
+        }
+
+        if (cityStateMap.states.get(command.getState()) == null) {
+            hasErrors = true;
+        }
+
+        return hasErrors;
     }
 
     // get all bookings from the database
@@ -102,6 +205,9 @@ public class PaymentsController {
     // get booking by user id
     @GetMapping("/bookings/user/{id}")
     public ResponseEntity<?> getBookingByUserId(@PathVariable("id") Long id) {
+        log.info("PaymentsController.getBookingByUserId()");
+        log.info("id: {}", id);
+
         List<BookingModel> booking = bookingDetailRepository.findByUserId(id);
         if (booking.isEmpty()) {
             return ResponseEntity.notFound().build();
