@@ -2,6 +2,7 @@ package com.example.airbnbbackend;
 
 import com.example.airbnbbackend.models.AuthenticationRequest;
 import com.example.airbnbbackend.models.AuthenticationResponse;
+import com.example.airbnbbackend.models.MyUserDetails;
 import com.example.airbnbbackend.models.User;
 import com.example.airbnbbackend.models.UserRepository;
 import com.example.airbnbbackend.util.JwtUtil;
@@ -36,32 +37,43 @@ public class HomeController {
         return "HELLO WORLD";
     }
 
-    @RequestMapping(value="/authenticate" , method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest)
+            throws Exception {
         try {
-            authenticationManager.authenticate(   
-                new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
-            );
-            
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
+                            authenticationRequest.getPassword()));
+
         } catch (BadCredentialsException e) {
-            //TODO: handle exception
+            // TODO: handle exception
+            System.out.println(e);
             throw new Exception("Incorrect username or password", e);
+        } catch (Exception e) {
+            System.out.println(e);
         }
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+        final MyUserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 
         final String jwt = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        return ResponseEntity.ok(new AuthenticationResponse(jwt, userDetails.getUsername(), userDetails.getId()));
     }
 
-    @RequestMapping(value="/register" , method = RequestMethod.POST)
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<?> RegisterUser(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
-        User user = userRepository.save(new User(authenticationRequest));
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        final String jwt = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        try {
+            User user = userRepository.save(new User(authenticationRequest));
+            final MyUserDetails userDetails = userDetailsService
+                    .loadUserByUsername(authenticationRequest.getUsername());
+
+            final String jwt = jwtTokenUtil.generateToken(userDetails);
+            return ResponseEntity.ok(new AuthenticationResponse(jwt, userDetails.getUsername(), userDetails.getId()));
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.out.println(e);
+            return ResponseEntity.internalServerError().body("error");
+        }
     }
-
-
 
 }

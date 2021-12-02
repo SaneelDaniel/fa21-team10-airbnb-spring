@@ -19,6 +19,8 @@ public class User {
     private String userName;
     private String password;
 
+    public User() {}
+    
     public User(AuthenticationRequest auth) {
         this.userName = auth.getUsername();
         this.password = auth.getPassword();

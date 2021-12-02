@@ -7,4 +7,8 @@ import lombok.Getter;
 public class AuthenticationResponse {
     @Getter
     private final String jwt;
+    @Getter
+    private final String userName;
+    @Getter
+    private final int id;
 }

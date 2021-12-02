@@ -10,14 +10,16 @@ import lombok.RequiredArgsConstructor;
 
 // @RequiredArgsConstructor
 public class MyUserDetails implements UserDetails{
-
+    private int id;
     private String username;
     private String password;
-
+    // private ArrayList<String> roles;
 
     public MyUserDetails(User user) {
         this.username = user.getUserName();
         this.password = user.getPassword();
+        this.id = user.getId();
+
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -32,6 +34,10 @@ public class MyUserDetails implements UserDetails{
     @Override
     public String getUsername() {
         return username;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override
