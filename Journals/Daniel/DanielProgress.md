@@ -18,3 +18,9 @@
 ## Week 3
 
 - Started working on the Payments Service, and the Booking Service
+- Implemented backend server code for payments & booking services
+
+## Week 4
+
+- Started working on the Property Service
+- Implemented backend server code for property service
