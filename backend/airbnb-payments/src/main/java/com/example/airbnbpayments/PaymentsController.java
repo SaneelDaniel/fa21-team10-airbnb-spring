@@ -44,7 +44,7 @@ import com.example.airbnbpayments.cybersource.*;
  */
 @Slf4j
 @Controller
-
+@RequestMapping("/payments")
 public class PaymentsController {
 
     @Autowired
@@ -75,13 +75,13 @@ public class PaymentsController {
     }
 
     // a get request to get all the payments
-    @GetMapping("/payments")
+    @GetMapping("/getAllPayments")
     public ResponseEntity<?> getPayments() {
         return ResponseEntity.ok(tempRepository.findAll());
     }
 
     // post mapping for the payments service
-    @PostMapping("/booking")
+    @PostMapping("/newBooking")
     public ResponseEntity<?> postAction(@RequestBody BookingModel body) {
         // save the tempModel to the database and return the id
         BookingModel temp = bookingDetailRepository.save(body);
@@ -89,7 +89,7 @@ public class PaymentsController {
     }
 
     // post action to add a new payment
-    @PostMapping("/payments")
+    @PostMapping("/newPayment")
     public ResponseEntity<?> postPayment(@RequestBody PaymentModel body) {
         // save the payment to the database and return the id
 
@@ -279,7 +279,7 @@ public class PaymentsController {
     }
 
     // get all bookings from the database
-    @GetMapping("/bookings")
+    @GetMapping("/allBookings")
     public ResponseEntity<?> getBookings() {
         return ResponseEntity.ok(bookingDetailRepository.findAll());
     }

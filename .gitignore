@@ -13,6 +13,9 @@ dist
 Snap.*
 *.dmp
 javacore.*
+*.DS_Store
+*.vscode
+
 
 # temp file for git conflict merging
 *.orig
