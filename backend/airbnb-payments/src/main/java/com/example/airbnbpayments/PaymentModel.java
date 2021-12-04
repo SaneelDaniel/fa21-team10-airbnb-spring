@@ -17,10 +17,10 @@ import javax.persistence.Table;
 class PaymentModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    transient private String action;
+    private String userid;
     private String firstname;
     private String lastname;
     private String address;
@@ -35,12 +35,12 @@ class PaymentModel {
     private String email;
     private String notes;
 
-    private String orderNumber;
-    private String propertyId;
-    private String transactionAmount;
-    private String transactionCurrency;
-    private String authId;
-    private String authStatus;
-    private String captureId;
-    private String captureStatus;
+    private String ordernumber;
+    private String propertyid;
+    private String transactionamount;
+    private String transactioncurrency;
+    private String authid;
+    private String authstatus;
+    private String captureid;
+    private String capturestatus;
 }
