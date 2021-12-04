@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-auth
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: backend-auth
+  template:
+    metadata:
+      labels:
+        name: backend-auth
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_HOST
+          value: 10.4.0.7
+        image: qnguyen3411/airbnb-backend:latest
+        name: backend-auth
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-auth-service 
+  namespace: default
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8080 
+  selector:
+    name: backend-auth

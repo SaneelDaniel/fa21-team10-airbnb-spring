@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-init-sql
+data:
+  01.sql: |
+    CREATE DATABASE IF NOT EXISTS `airbnb`;
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  replicas: 1
+  strategy: {}
+  selector:
+    matchLabels:
+      name: mysql
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        name: mysql
+    spec:
+      volumes:
+        - name: mysql-init-sql
+          configMap:
+            name: mysql-init-sql
+      containers:
+      - env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: cmpe172
+        image: mysql:8.0
+        name: mysql
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+          - name: mysql-init-sql
+            mountPath: /docker-entrypoint-initdb.d
+        resources: {}
+      restartPolicy: Always
+status: {}
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+spec:
+  ports:
+  - name: "3306"
+    port: 3306
+    targetPort: 3306
+  selector:
+    name: mysql
+status:
+  loadBalancer: {}
