@@ -1,0 +1,9 @@
+{
+  "plugins": ["prettier"],
+  "extends": ["react-app", "plugin:prettier/recommended"],
+  "rules": {
+    "prettier/prettier": ["error", {}, { "usePrettierrc": true }],
+    "react/jsx-pascal-case": 0,
+    "no-unused-vars": [1, { "vars": "local", "args": "after-used" }]
+  }
+}
