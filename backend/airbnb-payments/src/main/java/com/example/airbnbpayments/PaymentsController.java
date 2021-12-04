@@ -83,7 +83,6 @@ public class PaymentsController {
     // post mapping for the payments service
     @PostMapping("/booking")
     public ResponseEntity<?> postAction(@RequestBody BookingModel body) {
-
         // save the tempModel to the database and return the id
         BookingModel temp = bookingDetailRepository.save(body);
         return ResponseEntity.ok(temp.getId());
@@ -100,10 +99,109 @@ public class PaymentsController {
         CyberSourceAPI.setSecret(merchantsecretKey);
         CyberSourceAPI.setMerchant(merchantId);
 
-        boolean hasErrors = verifyPaymentDetails(body);
+        List<String> hasErrors = verifyPaymentDetails(body);
 
-        PaymentModel temp = paymentsRepository.save(body);
-        return ResponseEntity.ok(temp.getId());
+        if (hasErrors.size() > 0) {
+            return new ResponseEntity<List<String>>(
+                    hasErrors,
+                    org.springframework.http.HttpStatus.BAD_REQUEST);
+        }
+
+        int min = 1239871;
+        int max = 9999999;
+        int random_int = (int) Math.floor(Math.random() * (max - min + 1) + min);
+        String order_num = String.valueOf(random_int);
+        AuthRequest auth = new AuthRequest();
+        auth.reference = order_num;
+        auth.billToFirstName = body.getFirstname();
+        auth.billToLastName = body.getLastname();
+        auth.billToAddress = body.getAddress();
+        auth.billToCity = body.getCity();
+        auth.billToState = body.getState();
+        auth.billToZipCode = body.getZip();
+        auth.billToPhone = body.getPhonenumber();
+        auth.billToEmail = body.getEmail();
+        auth.transactionAmount = body.getTransactionamount();
+        auth.transactionCurrency = "USD";
+        auth.cardNumber = body.getCardnumber();
+        auth.cardExpMonth = CityAndStatesMapped.months.get(body.getExpmonth());
+        auth.cardExpYear = body.getExpyear();
+        auth.cardCVV = body.getCvv();
+        auth.cardType = CyberSourceAPI.getCardType(auth.cardNumber);
+        System.out.println("Auth card type" + auth.cardType);
+
+        if (auth.cardType.equals("ERROR")) {
+            System.out.println("Unsupported Credit Card Type.");
+            // model.addAttribute("message", "Unsupported Credit Card Type.");
+            // "ERROR", "Unsupported Credit Card Type"
+            // return a bad request with the error message
+            return new ResponseEntity<String>(
+                    "Unsupported Credit Card Type.",
+                    org.springframework.http.HttpStatus.BAD_REQUEST);
+        }
+        boolean authValid = true;
+        AuthResponse authResponse = new AuthResponse();
+        System.out.println("\n\nAuth Request: " + auth.toJson());
+        authResponse = api.authorize(auth);
+        System.out.println("\n\nAuth Response: " + authResponse.toJson());
+        if (!authResponse.status.equals("AUTHORIZED")) {
+            authValid = false;
+            System.out.println(authResponse.message);
+            // model.addAttribute("message", authResponse.message);
+            // "UNAUTHORIZED Credit Card Type"
+            // return a bad request with the error message
+            return new ResponseEntity<String>(
+                    "UNAUTHORIZED Credit Card Type",
+                    org.springframework.http.HttpStatus.BAD_REQUEST);
+        }
+
+        boolean captureValid = true;
+        CaptureRequest capture = new CaptureRequest();
+        CaptureResponse captureResponse = new CaptureResponse();
+        if (authValid) {
+            capture.reference = order_num;
+            capture.paymentId = authResponse.id;
+            capture.transactionAmount = body.getTransactionamount();
+            capture.transactionCurrency = "USD";
+            System.out.println("\n\nCapture Request: " + capture.toJson());
+            captureResponse = api.capture(capture);
+            System.out.println("\n\nCapture Response: " + captureResponse.toJson());
+            if (!captureResponse.status.equals("PENDING")) {
+                captureValid = false;
+                System.out.println(captureResponse.message);
+                // model.addAttribute("message", captureResponse.message);
+                // errArray.add("PENDING Credit Card Type");
+            }
+        }
+
+        /* Render View */
+
+        BookingModel book = null;
+
+        if (authValid && captureValid) {
+            // create a new booking model
+            BookingModel booking = new BookingModel();
+            booking.setUserId(body.getUserid());
+            booking.setPropertyId(body.getPropertyid());
+            booking.setStatus("PAID");
+            booking.setAmount(body.getTransactionamount());
+            booking.setCurrency("USD");
+            booking.setDate(LocalDate.now().toString());
+            booking.setPaymentStatus("PAID");
+            booking.setPaymentMethod("CREDIT CARD");
+            booking.setPaymentTransactionId(authResponse.id);
+            booking.setPaymentTransactionStatus(authResponse.status);
+            booking.setPaymentCaptureId(captureResponse.id);
+            booking.setPaymentCaptureStatus(captureResponse.status);
+            // temp = paymentsRepository.save(body);
+            book = bookingDetailRepository.save(booking);
+        }
+
+        if (book != null) {
+            return ResponseEntity.ok(book);
+        }
+
+        return ResponseEntity.badRequest().body("Uncaught Error Occured");
     }
 
     /**
@@ -111,78 +209,73 @@ public class PaymentsController {
      * 
      * @return boolean
      */
-    private boolean verifyPaymentDetails(PaymentModel command) {
+    private List<String> verifyPaymentDetails(PaymentModel command) {
         // check if the payment is valid
+        List<String> errArray = new ArrayList<String>();
         CityAndStatesMapped cityStateMap = new CityAndStatesMapped();
         boolean hasErrors = false;
         if (command.getFirstname().equals("")) {
-            hasErrors = true;
-
+            errArray.add("First Name is required");
         }
         if (command.getLastname().equals("")) {
-            hasErrors = true;
-
+            errArray.add("Last Name is required");
         }
         if (command.getAddress().equals("")) {
-            hasErrors = true;
-
+            errArray.add("Address is required");
         }
         if (command.getCity().equals("")) {
-            hasErrors = true;
-
+            errArray.add("City is required");
         }
         if (command.getState().equals("")) {
-            hasErrors = true;
-
+            errArray.add("State is required");
         }
         if (command.getZip().equals("")) {
-            hasErrors = true;
-
+            errArray.add("Zip Code is required");
         }
         if (command.getPhonenumber().equals("")) {
-            hasErrors = true;
+            errArray.add("Phone Number is required");
         }
         if (command.getCardnumber().equals("")) {
-            hasErrors = true;
+            errArray.add("Credit Card Number is required");
         }
         if (command.getExpmonth().equals("")) {
-            hasErrors = true;
+            errArray.add("Expiration Month is required");
         }
         if (command.getExpyear().equals("")) {
-            hasErrors = true;
+            errArray.add("Expiration Year is required");
         }
         if (command.getCvv().equals("")) {
-            hasErrors = true;
+            errArray.add("CVV is required");
         }
         if (command.getEmail().equals("")) {
-            hasErrors = true;
+            errArray.add("Email is required");
         }
 
         if (!command.getZip().matches("\\d{5}")) {
-            hasErrors = true;
+            errArray.add("Zip Code must be 5 digits");
         }
         if (!command.getPhonenumber().matches("[(]\\d{3}[)] \\d{3}-\\d{4}")) {
-            hasErrors = true;
+            errArray.add("Phone Number must be in the format (xxx) xxx-xxxx");
         }
         if (!command.getCvv().matches("\\d{3}")) {
-            hasErrors = true;
+            errArray.add("CVV must be 3 digits");
         }
         if (!command.getCardnumber().matches("((?:(?:\\d{4}[- ]){3}\\d{4}|\\d{16}))(?![\\d])")) {
-            hasErrors = true;
+            errArray.add("Credit Card Number must be 16 digits");
         }
         if (!command.getExpyear().matches("\\d{4}")) {
-            hasErrors = true;
+            errArray.add("Expiration Year must be 4 digits");
         }
 
         if (cityStateMap.months.get(command.getExpmonth()) == null) {
-            hasErrors = true;
+            errArray.add("Expiration Month is invalid");
         }
 
         if (cityStateMap.states.get(command.getState()) == null) {
-            hasErrors = true;
+            errArray.add("State is invalid");
         }
 
-        return hasErrors;
+        return errArray;
     }
 
     // get all bookings from the database
