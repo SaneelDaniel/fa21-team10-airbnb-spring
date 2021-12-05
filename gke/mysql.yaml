@@ -5,6 +5,8 @@ metadata:
 data:
   01.sql: |
     CREATE DATABASE IF NOT EXISTS `airbnb`;
+    CREATE DATABASE IF NOT EXISTS `airbnbProperties`;
+    CREATE DATABASE IF NOT EXISTS `airbnbPayment`;
 
 ---
 apiVersion: apps/v1
