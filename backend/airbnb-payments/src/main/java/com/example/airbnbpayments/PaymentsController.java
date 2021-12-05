@@ -73,11 +73,14 @@ public class PaymentsController {
     @Value("${cybersource.merchantid}")
     private String merchantId;
 
+    @Value("${endpoints.property}")
+    private String propertyEndpoint;
+
     private CyberSourceAPI api = new CyberSourceAPI();
 
     @RequestMapping("/")
     public ResponseEntity<?> getAction() {
-        return ResponseEntity.ok("Hello From Payments");
+        return ResponseEntity.ok("Hello From Payments" + propertyEndpoint);
     }
 
     // a get request to get all the payments
@@ -208,7 +211,7 @@ public class PaymentsController {
         }
 
         if (book != null) {
-            final String uri = "http://localhost:8080/property/" + body.getPropertyid();
+            final String uri = propertyEndpoint + body.getPropertyid();
 
             RestTemplate restTemplate = new RestTemplate();
             String result = restTemplate.getForObject(uri, String.class);
@@ -329,7 +332,7 @@ public class PaymentsController {
             List<PropertyModel> propertyList = new ArrayList<>();
             Map<Long, BookingDetailReturnValues> bookingPropertyMap = new HashMap<>();
             for (BookingModel b : booking) {
-                final String uri = "http://localhost:8080/property/" + b.getPropertyId();
+                final String uri = propertyEndpoint + b.getPropertyId();
                 RestTemplate restTemplate = new RestTemplate();
                 PropertyModel result = restTemplate.getForObject(uri, PropertyModel.class);
                 BookingDetailReturnValues bookingDetailReturnValues = new BookingDetailReturnValues(

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: payments
+  template:
+    metadata:
+      labels:
+        name: payments
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_HOST
+          value: mysql-service
+        - name: PROPERTY_ENDPOINT
+          value: http://airbnb-property-service/property/
+        image: qnguyen3411/airbnb-payments:latest
+        name: payments
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments-service 
+  namespace: default
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8080 
+  selector:
+    name: payments
