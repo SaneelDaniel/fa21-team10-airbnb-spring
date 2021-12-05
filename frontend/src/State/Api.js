@@ -30,8 +30,37 @@ export const register = async (username, password) => {
     return resp.data;
 }
 
+export const fetchProperties = async () => {
+    const resp = await axios.get(propertyEndpoint + 'all');
+    if (resp.status !== 200) {
+        throw Error;
+    }
+    return resp.data;
+}
+
+export const postPayment = async (paymentData) => {
+    const resp = await axios.post(paymentEndpoint + 'newPayment', paymentData);
+    console.log(resp);
+    if (resp.status !== 200) {
+        throw Error;
+    }
+    return resp.data;
+}
+
+export const getOrderHistory = async (uID) => {
+    const resp = await axios.get(paymentEndpoint + `bookings/user/${uID}`)
+    console.log(resp);
+    if (resp.status !== 200) {
+        throw Error;
+    }
+    return resp.data;
+}
+
 export default {
     printEndpoints,
     login,
-    register
+    register,
+    fetchProperties,
+    postPayment,
+    getOrderHistory
 }

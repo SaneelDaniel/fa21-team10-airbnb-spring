@@ -12,14 +12,18 @@ import { useContext } from 'react';
 import AppState from './State/AppContext';
 import PropertPage from './PropertyPage';
 import OrderHistory from './OrderHistory';
+import api from "./State/Api"
 function App() {
   const context = useContext(AppState);
 
   useEffect(() => {
-    getPropertyData();
+    // getPropertyData();
+    api.fetchProperties()
+    .then(data => context.SET_PROPERTY_DATA(data));
   }, []);
 
   const getPropertyData = async () => {
+    
     console.log('getPropertyData getting data');
     const response = await axios
       .get('http://localhost:8080/property/all')

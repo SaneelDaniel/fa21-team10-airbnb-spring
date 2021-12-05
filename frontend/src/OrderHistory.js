@@ -1,15 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@material-ui/core';
 import AppState from './State/AppContext';
 import axios from 'axios';
 import SearchResult from './SearchResult';
+import api from "./State/Api";
 
 function OrderHistory() {
   const context = React.useContext(AppState);
+  const uID = context.user ? context.user.id : "";
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     // Get all sucessful orders
-    getOrderhistory();
+    api.getOrderHistory(uID).then(result => setData(Object.values(result))).catch(e => console.log(e));
   }, []);
 
   const getOrderhistory = async () => {
@@ -27,8 +30,7 @@ function OrderHistory() {
 
   return (
     <div className="order-history">
-      {context.propertyData.length != 0
-        ? context.propertyData.map((order) => {
+      {data.map((order) => {
             return (
               <div className="order-history-item">
                 <Button variant="contained" color="primary">
@@ -46,8 +48,9 @@ function OrderHistory() {
                 />
               </div>
             );
-          })
-        : null}
+          })}
+   
+
     </div>
   );
 }

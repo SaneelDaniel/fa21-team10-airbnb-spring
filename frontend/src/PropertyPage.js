@@ -4,12 +4,16 @@ import { Button } from '@material-ui/core';
 import SearchResult from './SearchResult';
 import AppState from './State/AppContext';
 import axios from 'axios';
+import api from "./State/Api";
+import { useHistory } from 'react-router';
 
 function PropertyPage() {
   const context = React.useContext(AppState);
   const [openPayment, setOpenPayment] = React.useState(false);
-  const property = JSON.parse(localStorage.getItem('property1'));
+  const history = useHistory();
+  const property = context.currentProperty;
   useEffect(() => {
+    console.log(context)
     console.log(property, 'Property Page');
   }, []);
 
@@ -146,21 +150,31 @@ function PropertyPage() {
       captureid: 'none',
       capturestatus: 'none',
     };
-
-    axios
-      .post('http://localhost:8888/payments/newPayment', tempPaymentModel)
-      .then((res) => {
-        console.log('Payment Response: ', res);
-      })
-      .catch((err) => {
-        console.log('Payment Error: ', err);
-      });
+    api.postPayment(tempPaymentModel)
+    .then(res =>{
+      console.log(res)
+      history.push('/orderhistory')
+    })
+    .catch(e => console.log("ERROR"))
+    // axios
+    //   .post('http://localhost:8083/payments/newPayment', tempPaymentModel)
+    //   .then((res) => {
+    //     console.log('Payment Response: ', res);
+    //   })
+    //   .catch((err) => {
+    //     console.log('Payment Error: ', err);
+    //   });
   };
+
+  if (!property) {
+    return <h1>Unavailable</h1>
+  }
 
   return (
     <div className="property-page">
       <p>Property Page</p>
-      <img src={property.image}></img>
+      <p>{JSON.stringify(property)}</p>
+      <img src={property?.image}></img>
       <div className="property-details">
         <h3>{property.name}</h3>
         <p>{property.description}</p>
@@ -186,6 +200,7 @@ function PropertyPage() {
 
         {openPayment && (
           <div className="payment_form">
+
             <label>
               First Name:
               <input
@@ -197,6 +212,7 @@ function PropertyPage() {
                 }}
               />
             </label>
+
             <label>
               Last Name:
               <input
