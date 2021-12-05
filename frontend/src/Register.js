@@ -1,53 +1,47 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 import './Register.css';
 import Popup from 'react-popup';
 import axios from 'axios';
+import api from "./State/Api";
+// import { useStateValue } from './State/StateProvider';
+import AppContext from './State/AppContext';
 
 function Register() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
 
-  //   const [{ user }, dispatch] = useStateValue();
+  const context = useContext(AppContext);
   const history = useHistory();
 
   useEffect(() => {
-    getProperties();
-  });
-
-  const getProperties = async () => {
-    axios
-      .get('http://localhost:8080/property/all')
-      .then((res) => {
-        console.log('Property REsponse ', res.data);
-      })
-      .catch((err) => {
-        console.log('Property Err ', err);
-      });
-  };
+    console.log(context);
+  }, [])
 
   const register = (e) => {
     e.preventDefault();
 
     if (!password) {
       window.alert('Please enter a Password');
-    } else if (!email) {
-      window.alert('Please enter an Password');
-    } else if (!firstName) {
-      window.alert('Please enter a First Name');
-    } else if (!lastName) {
-      window.alert('Please enter a Last Name');
+    } else if (!username) {
+      window.alert('Please enter Username');
     } else if (password !== confirmPassword) {
       window.alert('Passwords Do Not Match');
     } else {
       //do the registration here
       // do registration
+      api.register(username, password)
+        .then(user => context.SET_USER(user))
+        .catch(e => window.alert('Something wrong happened.'));
     }
   };
+
+  if (context.loggedIn) {
+    console.log("LOGGED IN");
+    history.push('/home');
+  }
 
   return (
     <div className="register">
@@ -55,8 +49,8 @@ function Register() {
       <div className="register__container">
         <h1>Create New Account</h1>
         <form>
-          <h5>E-mail</h5>
-          <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <h5>Username</h5>
+          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
 
           <h5>Password</h5>
           <input

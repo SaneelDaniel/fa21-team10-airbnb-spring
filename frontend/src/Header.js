@@ -1,22 +1,50 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import './Header.css';
 import SearchIcon from '@material-ui/icons/Search';
 import LanguageIcon from '@material-ui/icons/Language';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { Avatar } from '@material-ui/core';
+import { Avatar, Button } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import OrderHistory from './OrderHistory';
+import AppContext from './State/AppContext';
 
 function Header() {
   const history = useHistory();
+  const context = useContext(AppContext);
   const orderHistory = (e) => {
     e.preventDefault();
 
     history.push('/orderhistory');
   };
+  const loggedIn = context.loggedIn;
+  const user = context.user ? context.user.userName : "Guest";
+  const logOut = (e) => {
+    e.preventDefault();
 
-  const [loggedIn, setLoggedIn] = React.useState(false);
+    context.LOGOUT();
+  }
+
+  const toAuth = (e) => {
+    e.preventDefault();
+    history.push('/')
+  }
+
+  const UserButtons = () => (
+    <>
+      <p>{user}</p>
+      <Button variant="outlined" onClick={orderHistory}>Order history</Button>
+      <Button variant="outlined" onClick={logOut}>Log out</Button>
+    </>
+  )
+
+  const GuestButtons = () => (
+    <>
+      <p>Guest</p>
+      <Button variant="outlined" onClick={toAuth}>Login/Register</Button>
+    </>
+  )
+  
   return (
     <div className="header">
       <Link to="/">
@@ -31,11 +59,7 @@ function Header() {
         <LanguageIcon />
         <ExpandMoreIcon />
         <Avatar />
-        {loggedIn ? <p>UserName:</p> : 'User'}
-        <button className="header__signInButton" onClick={orderHistory}>
-          {' '}
-          See past orders
-        </button>
+        {loggedIn ? <UserButtons /> : <GuestButtons />}
       </div>
     </div>
   );
