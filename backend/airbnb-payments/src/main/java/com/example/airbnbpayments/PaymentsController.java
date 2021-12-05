@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.util.Optional;
 import java.time.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +30,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.validation.BindingResult;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,6 +49,7 @@ import com.example.airbnbpayments.cybersource.*;
  */
 @Slf4j
 @Controller
+@CrossOrigin(origins = "*")
 @RequestMapping("/payments")
 public class PaymentsController {
 
@@ -93,6 +99,7 @@ public class PaymentsController {
     public ResponseEntity<?> postPayment(@RequestBody PaymentModel body) {
         // save the payment to the database and return the id
 
+        log.info("Payment Data Received: " + body.toString());
         // setup cybersource api
         CyberSourceAPI.setHost(apiHost);
         CyberSourceAPI.setKey(merchantKeyId);
@@ -102,6 +109,9 @@ public class PaymentsController {
         List<String> hasErrors = verifyPaymentDetails(body);
 
         if (hasErrors.size() > 0) {
+            for (String error : hasErrors) {
+                log.info("Error: line 109: " + error);
+            }
             return new ResponseEntity<List<String>>(
                     hasErrors,
                     org.springframework.http.HttpStatus.BAD_REQUEST);
@@ -198,7 +208,16 @@ public class PaymentsController {
         }
 
         if (book != null) {
-            return ResponseEntity.ok(book);
+            final String uri = "http://localhost:8080/property/" + body.getPropertyid();
+
+            RestTemplate restTemplate = new RestTemplate();
+            String result = restTemplate.getForObject(uri, String.class);
+
+            System.out.println("Property Request Call Result" + result);
+            Map<String, Object> map = new HashMap<>();
+            map.put("booking", book);
+            map.put("property", result);
+            return ResponseEntity.ok(map);
         }
 
         return ResponseEntity.badRequest().body("Uncaught Error Occured");
@@ -302,11 +321,41 @@ public class PaymentsController {
         log.info("id: {}", id);
 
         List<BookingModel> booking = bookingDetailRepository.findByUserId(id);
+
         if (booking.isEmpty()) {
             return ResponseEntity.notFound().build();
         } else {
-            return ResponseEntity.ok(booking);
+
+            List<PropertyModel> propertyList = new ArrayList<>();
+            Map<Long, BookingDetailReturnValues> bookingPropertyMap = new HashMap<>();
+            for (BookingModel b : booking) {
+                final String uri = "http://localhost:8080/property/" + b.getPropertyId();
+                RestTemplate restTemplate = new RestTemplate();
+                PropertyModel result = restTemplate.getForObject(uri, PropertyModel.class);
+                BookingDetailReturnValues bookingDetailReturnValues = new BookingDetailReturnValues(
+                        Long.parseLong(b.getPropertyId()), result, b.getDate());
+
+                bookingPropertyMap.put(Long.parseLong(b.getPropertyId()), bookingDetailReturnValues);
+            }
+
+            for (Long entry : bookingPropertyMap.keySet()) {
+                log.info("Key: {}", entry);
+                log.info("Value: {}", bookingPropertyMap.get(entry));
+            }
+
+            return ResponseEntity.ok(bookingPropertyMap);
         }
+    }
+
+    /**
+     * Helper Class For Get Payment By User Id Method
+     */
+    @Data
+    @AllArgsConstructor
+    private class BookingDetailReturnValues {
+        Long id;
+        PropertyModel property;
+        String bookingDate;
     }
 
 }
