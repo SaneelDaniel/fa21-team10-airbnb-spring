@@ -4,11 +4,11 @@ import { Button } from '@material-ui/core';
 import SearchResult from './SearchResult';
 import AppState from './State/AppContext';
 
-function SearchPage() {
+function PropertyPage() {
   const context = React.useContext(AppState);
 
   useEffect(() => {
-    console.log(context.propertyData, 'Search Result Page');
+    console.log(context.currentProperty, 'Property Page');
   }, []);
 
   return (
@@ -18,4 +18,4 @@ function SearchPage() {
   );
 }
 
-export default SearchPage;
+export default PropertyPage;

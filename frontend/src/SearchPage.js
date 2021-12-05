@@ -23,15 +23,16 @@ function SearchPage() {
       </div>
       {context.propertyData.length != 0
         ? context.propertyData.map((item) => {
-            console.log('item to map', item);
             return (
               <SearchResult
+                key={item.id}
                 img={item.image}
                 location={`${item.city}, ${item.state}, ${item.zip}`}
                 title={item.name}
                 description={item.description}
                 star={4.73}
                 price={`$${item.price}`}
+                propertyObject={item}
               />
             );
           })

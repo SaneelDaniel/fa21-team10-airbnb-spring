@@ -10,6 +10,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
 import { useContext } from 'react';
 import AppState from './State/AppContext';
+import PropertPage from './PropertyPage';
 function App() {
   const context = useContext(AppState);
 
@@ -26,8 +27,6 @@ function App() {
           // setData(res.data.slice(0, 3));
           context.SET_PROPERTY_DATA(res.data);
         } else console.log('error');
-        console.log('DAta', res);
-        console.log(res);
       })
       .catch((err) => {
         console.log('Error in Fetching Properties', err);
@@ -44,8 +43,8 @@ function App() {
           <Route path="/search">
             <SearchPage />
           </Route>
+          <Route path="/property" component={PropertPage} />
           <Route path="/home" component={Home} />
-
           <Route path="/">
             <Login />
           </Route>
