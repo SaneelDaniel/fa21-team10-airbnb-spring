@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: frontend
+  annotations:
+    kubernetes.io/ingress.class: kong
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: frontend-service
+          servicePort: 80
+
+
+
