@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 
-import "./Register.css";
-import Popup from "react-popup";
-import axios from "axios";
+import './Register.css';
+import Popup from 'react-popup';
+import axios from 'axios';
 
 function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
 
   //   const [{ user }, dispatch] = useStateValue();
   const history = useHistory();
@@ -21,12 +21,12 @@ function Register() {
 
   const getProperties = async () => {
     axios
-      .get("http://localhost:8080/property/all")
+      .get('http://localhost:8080/property/all')
       .then((res) => {
-        console.log("Property REsponse ", res.data);
+        console.log('Property REsponse ', res.data);
       })
       .catch((err) => {
-        console.log("Property Err ", err);
+        console.log('Property Err ', err);
       });
   };
 
@@ -34,15 +34,15 @@ function Register() {
     e.preventDefault();
 
     if (!password) {
-      window.alert("Please enter a Password");
+      window.alert('Please enter a Password');
     } else if (!email) {
-      window.alert("Please enter an Password");
+      window.alert('Please enter an Password');
     } else if (!firstName) {
-      window.alert("Please enter a First Name");
+      window.alert('Please enter a First Name');
     } else if (!lastName) {
-      window.alert("Please enter a Last Name");
+      window.alert('Please enter a Last Name');
     } else if (password !== confirmPassword) {
-      window.alert("Passwords Do Not Match");
+      window.alert('Passwords Do Not Match');
     } else {
       //do the registration here
       // do registration
@@ -55,26 +55,8 @@ function Register() {
       <div className="register__container">
         <h1>Create New Account</h1>
         <form>
-          <h5>First Name</h5>
-          <input
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-          />
-
-          <h5>Last Name</h5>
-          <input
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-          />
-
           <h5>E-mail</h5>
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
 
           <h5>Password</h5>
           <input

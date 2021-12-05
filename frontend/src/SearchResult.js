@@ -13,7 +13,7 @@ function SearchResult({
     total,
 }) {
     return (
-        <div className='searchResult'>
+        <div className='searchResult' onClick={()=>{}}>
             <img src={img} alt="" />
             <FavoriteBorderIcon className="searchResult__heart" />
 
