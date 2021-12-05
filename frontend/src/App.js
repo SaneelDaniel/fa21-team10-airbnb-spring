@@ -26,6 +26,7 @@ function App() {
         if (res.data != null) {
           // setData(res.data.slice(0, 3));
           context.SET_PROPERTY_DATA(res.data);
+          localStorage.setItem('property1', JSON.stringify(res.data[0]));
         } else console.log('error');
       })
       .catch((err) => {
