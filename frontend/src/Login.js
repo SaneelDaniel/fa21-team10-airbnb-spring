@@ -1,30 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { printEndpoints } from './State/Api';
+import AppContext from './State/AppContext';
+import api from "./State/Api";
+
 import './Login.css';
 
 function Login() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const history = useHistory();
+  const context = useContext(AppContext);
 
-  useEffect(() => {
-    printEndpoints();
-  }, [])
-
-  //sign in function for firebase authentication
   const signIn = (e) => {
     e.preventDefault();
-    // some firebase signin shit
+    api.login(username, password)
+    .then(user => context.SET_USER(user))
+    .catch(e => window.alert('Something wrong happened.'));
   };
 
-  //Register function with firebase authentication
   const register = (e) => {
     e.preventDefault();
 
-    // some firebase register shit
     history.push('/register');
   };
+
+  if (context.loggedIn) {
+    history.push('/home');
+  }
 
   //Component / View for Login
   return (
@@ -32,8 +35,8 @@ function Login() {
       <div className="login__container">
         <h1>Sign-In</h1>
         <form>
-          <h5>E-mail</h5>
-          <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <h5>Username</h5>
+          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
 
           <h5>Password</h5>
           <input

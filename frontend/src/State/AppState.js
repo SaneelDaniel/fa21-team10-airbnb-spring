@@ -45,6 +45,12 @@ const AppState = (props) => {
     });
   };
 
+  const LOGOUT = () => {
+    dispatch({
+      type: 'LOGOUT'
+    })
+  }
+
   return (
     <AppContext.Provider
       value={{
@@ -55,6 +61,7 @@ const AppState = (props) => {
         SET_USER: SET_USER,
         SET_PROPERTY_DATA: SET_PROPERTY_DATA,
         SET_CURRENT_PROPERTY: SET_CURRENT_PROPERTY,
+        LOGOUT
       }}
     >
       {props.children}

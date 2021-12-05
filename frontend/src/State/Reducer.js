@@ -8,6 +8,14 @@ const reducer = (state, action) => {
       return {
         ...state,
         user: action.payload,
+        loggedIn: true
+      };
+    case 'LOGOUT':
+      localStorage.removeItem('User');
+      return {
+        ...state,
+        user: null,
+        loggedIn: false
       };
     case 'SET_LOGGEDIN_STATUS':
       return {
