@@ -5,8 +5,17 @@ import LanguageIcon from '@material-ui/icons/Language';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Avatar } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import OrderHistory from './OrderHistory';
 
 function Header() {
+  const history = useHistory();
+  const orderHistory = (e) => {
+    e.preventDefault();
+
+    history.push('/orderhistory');
+  };
+
   const [loggedIn, setLoggedIn] = React.useState(false);
   return (
     <div className="header">
@@ -23,6 +32,10 @@ function Header() {
         <ExpandMoreIcon />
         <Avatar />
         {loggedIn ? <p>UserName:</p> : 'User'}
+        <button className="header__signInButton" onClick={orderHistory}>
+          {' '}
+          See past orders
+        </button>
       </div>
     </div>
   );

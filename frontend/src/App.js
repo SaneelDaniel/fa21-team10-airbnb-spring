@@ -11,6 +11,7 @@ import axios from 'axios';
 import { useContext } from 'react';
 import AppState from './State/AppContext';
 import PropertPage from './PropertyPage';
+import OrderHistory from './OrderHistory';
 function App() {
   const context = useContext(AppState);
 
@@ -46,6 +47,7 @@ function App() {
           </Route>
           <Route path="/property" component={PropertPage} />
           <Route path="/home" component={Home} />
+          <Route path="/orderhistory" component={OrderHistory} />
           <Route path="/">
             <Login />
           </Route>

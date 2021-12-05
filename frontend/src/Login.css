@@ -23,6 +23,7 @@
   flex-direction: column;
   border-radius: 5px;
   border: 1px solid darkgray;
+  background-color: rgba(255, 255, 255, 0.425);
   padding: 20px;
 }
 

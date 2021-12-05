@@ -40,3 +40,13 @@
   width: 15vw;
   margin-right: 80px;
 }
+
+.header__signInButton {
+  background: lightgray;
+  border-radius: 2px;
+  width: 40%;
+  height: 30px;
+  border: 1px solid;
+  margin-top: 10px;
+  border: darkgray;
+}
