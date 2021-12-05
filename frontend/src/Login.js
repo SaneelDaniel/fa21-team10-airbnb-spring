@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { printEndpoints } from './State/Api';
 import './Login.css';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const history = useHistory();
+
+  useEffect(() => {
+    printEndpoints();
+  }, [])
 
   //sign in function for firebase authentication
   const signIn = (e) => {
