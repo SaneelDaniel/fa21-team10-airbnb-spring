@@ -61,6 +61,15 @@ export const getOrderHistory = async (uID) => {
   return resp.data;
 };
 
+export const getIssueRequestsByUserId = async (uID) => {
+  const resp = await axios.get(helpDeskEndpoint + `user/${uID}`);
+
+  if (resp.status !== 200) {
+    throw Error;
+  }
+  return resp.data;
+};
+
 export const postBookingIssueTicket = async (ticketDetails) => {
   const resp = await axios.post(helpDeskEndpoint + `create`, ticketDetails);
   console.log('Issue Response', resp);
@@ -78,4 +87,5 @@ export default {
   postPayment,
   getOrderHistory,
   postBookingIssueTicket,
+  getIssueRequestsByUserId,
 };
