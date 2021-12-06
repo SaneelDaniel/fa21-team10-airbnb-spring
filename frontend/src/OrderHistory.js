@@ -9,7 +9,7 @@ import { useHistory } from 'react-router';
 // import Select from 'react-select';
 function OrderHistory() {
   const context = React.useContext(AppState);
-  const uID = context.user ? context.user.id : '01';
+  const uID = context.user ? context.user.id : '';
   const [data, setData] = useState([]);
   const [show, setShow] = useState(false);
   const history = useHistory();
@@ -18,7 +18,7 @@ function OrderHistory() {
     // Get all sucessful orders
 
     api
-      .getOrderHistory('01')
+      .getOrderHistory('02')
       .then((result) => {
         console.log(result);
         setData(result);

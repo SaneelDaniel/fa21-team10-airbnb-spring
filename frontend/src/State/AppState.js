@@ -4,7 +4,7 @@ import reducer from './Reducer';
 
 var userThis = null;
 if (typeof window !== 'undefined') {
-  userThis = JSON.parse(localStorage.getItem('User'));
+  userThis = JSON.parse(localStorage.getItem('AirbnbUser'));
 }
 var logIn = false;
 if (userThis !== null) {
