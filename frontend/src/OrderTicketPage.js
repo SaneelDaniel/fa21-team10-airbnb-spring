@@ -6,17 +6,22 @@ import AppState from './State/AppContext';
 import axios from 'axios';
 import api from './State/Api';
 import { useHistory } from 'react-router';
+import Select from 'react-select';
 
-function PropertyPage() {
+function OrderTicketPage() {
   const context = React.useContext(AppState);
   const [openPayment, setOpenPayment] = React.useState(false);
   const [paymentClicked, setPaymentClicked] = React.useState(false);
   const history = useHistory();
-  const property = context.currentProperty;
+  const property = context.currentIssueProperty.property;
   useEffect(() => {
     console.log(context);
     console.log(property, 'Property Page');
   }, []);
+  const issueTypeSelected = [
+    { value: '1', label: 'Issue' },
+    { value: '2', label: 'Request' },
+  ];
 
   const [userid, setUserid] = React.useState('');
   const [firstname, setFirstname] = React.useState('');
@@ -123,7 +128,7 @@ function PropertyPage() {
         hasErr = true;
       }
 
-      let zipRegex = new RegExp('^\d{5}$');
+      let zipRegex = new RegExp('^d{5}$');
       if (zipRegex.test(zip)) {
         alert(`Please enter the zip code in the format xxxxx ${zip}`);
         hasErr = true;
@@ -157,11 +162,29 @@ function PropertyPage() {
         <h4>Owner Email: {property.owneremail}</h4>
       </div>
 
+      <div className="">
+        <h3>Ticket Information</h3>
+        <div
+          className="ticket-selection"
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Select
+            options={issueTypeSelected}
+            id="newProdutSelectOptions"
+            onChange={(e) => {}}
+          />
+        </div>
+      </div>
+
       <div className="property-buttons">
         <Button
           className="buynow_button"
           color="primary"
-          backgroundColor="primary"
+          backgroundcolor="primary"
           variant={openPayment ? 'outlined' : 'contained'}
           style={{ cursor: 'pointer', marginTop: '30px', marginBottom: '30px' }}
           onClick={() => {
@@ -171,177 +194,10 @@ function PropertyPage() {
         >
           Checkout
         </Button>
-
-        {openPayment && (
-          <div className="payment_form">
-            <label className="detail_input">
-              First Name:
-              <input
-                type="text"
-                name="first_name"
-                placeholder="First Name"
-                value={firstname}
-                onChange={(e) => {
-                  setFirstname(e.target.value);
-                }}
-              />
-            </label>
-
-            <label className="detail_input">
-              Last Name:
-              <input
-                type="text"
-                name="last_name"
-                placeholder="Last Name"
-                value={lastname}
-                onChange={(e) => {
-                  setLastname(e.target.value);
-                }}
-              />
-            </label>
-
-            <label className="detail_input">
-              Card Number
-              <input
-                type="text"
-                name="card_number"
-                placeholder="1234 56678 9012 3456"
-                value={cardnumber}
-                onChange={(e) => {
-                  setCardnumber(e.target.value);
-                }}
-              />
-            </label>
-            <label className="detail_input">
-              Expiration Month
-              <input
-                type="text"
-                name="expiration_date"
-                placeholder="December"
-                value={expmonth}
-                onChange={(e) => {
-                  setExpmonth(e.target.value);
-                }}
-              />
-            </label>
-            <label className="detail_input">
-              Expiration Year
-              <input
-                type="text"
-                name="expiration_date"
-                placeholder="2020"
-                value={expyear}
-                onChange={(e) => {
-                  setExpyear(e.target.value);
-                }}
-              />
-            </label>
-
-            <label className="detail_input">
-              CVV
-              <input
-                type="text"
-                name="cvv"
-                placeholder="123"
-                value={cvv}
-                onChange={(e) => {
-                  setCvv(e.target.value);
-                }}
-              />
-            </label>
-
-            <label className="detail_input">
-              St Address:
-              <input
-                type="text"
-                name="address"
-                placeholder="1234 Main St"
-                value={address}
-                onChange={(e) => {
-                  setAddress(e.target.value);
-                }}
-              />
-            </label>
-            <label className="detail_input">
-              City:
-              <input
-                type="text"
-                name="city"
-                placeholder="San Jose"
-                value={city}
-                onChange={(e) => {
-                  setCity(e.target.value);
-                }}
-              />
-            </label>
-            <label className="detail_input">
-              State:
-              <input
-                type="text"
-                name="state"
-                placeholder="CA"
-                value={state}
-                onChange={(e) => {
-                  setState(e.target.value);
-                }}
-              />
-            </label>
-            <label className="detail_input">
-              Zip:
-              <input
-                type="text"
-                name="zip"
-                placeholder="95131"
-                value={zip}
-                onChange={(e) => {
-                  setZip(e.target.value);
-                }}
-              />
-            </label>
-            <label className="detail_input">
-              Phone Number:
-              <input
-                type="text"
-                name="phonenumber"
-                placeholder="(123) 456-7890"
-                value={phonenumber}
-                onChange={(e) => {
-                  setPhonenumber(e.target.value);
-                }}
-              />
-            </label>
-            <label className="detail_input">
-              Email:
-              <input
-                type="text"
-                name="email"
-                placeholder="abc@email.com"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-              />
-            </label>
-          </div>
-        )}
-        {openPayment && (
-          <Button
-            className="paynow_button"
-            variant={'contained'}
-            disabled={paymentClicked}
-            style={{ cursor: 'pointer', marginTop: '30px', marginBottom: '30px' }}
-            onClick={(e) => {
-              setPaymentClicked(true);
-              onSubmitPayment(e);
-            }}
-            href=""
-          >
-            Pay Now
-          </Button>
-        )}
       </div>
+      <div></div>
     </div>
   );
 }
 
-export default PropertyPage;
+export default OrderTicketPage;

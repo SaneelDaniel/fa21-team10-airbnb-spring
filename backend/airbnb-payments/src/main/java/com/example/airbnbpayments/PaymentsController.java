@@ -212,15 +212,19 @@ public class PaymentsController {
 
         if (book != null) {
             final String uri = propertyEndpoint + body.getPropertyid();
-
+            final String updateSoldUri = propertyEndpoint + "/sold/" + body.getPropertyid();
             RestTemplate restTemplate = new RestTemplate();
-            String result = restTemplate.getForObject(uri, String.class);
+
+            PropertyModel result = restTemplate.getForObject(updateSoldUri, PropertyModel.class);
 
             System.out.println("Property Request Call Result" + result);
+
+            List<Map<String, Object>> list = new ArrayList<>();
             Map<String, Object> map = new HashMap<>();
             map.put("booking", book);
             map.put("property", result);
-            return ResponseEntity.ok(map);
+            list.add(map);
+            return ResponseEntity.ok(list);
         }
 
         return ResponseEntity.badRequest().body("Uncaught Error Occured");
@@ -331,22 +335,24 @@ public class PaymentsController {
 
             List<PropertyModel> propertyList = new ArrayList<>();
             Map<Long, BookingDetailReturnValues> bookingPropertyMap = new HashMap<>();
+            List<BookingDetailReturnValues> bookingList = new ArrayList<>();
             for (BookingModel b : booking) {
                 final String uri = propertyEndpoint + b.getPropertyId();
                 RestTemplate restTemplate = new RestTemplate();
                 PropertyModel result = restTemplate.getForObject(uri, PropertyModel.class);
                 BookingDetailReturnValues bookingDetailReturnValues = new BookingDetailReturnValues(
-                        Long.parseLong(b.getPropertyId()), result, b.getDate());
-
+                        Long.parseLong(b.getPropertyId()), result, b.getDate(), b);
+                bookingList.add(bookingDetailReturnValues);
                 bookingPropertyMap.put(Long.parseLong(b.getPropertyId()), bookingDetailReturnValues);
             }
 
-            for (Long entry : bookingPropertyMap.keySet()) {
-                log.info("Key: {}", entry);
-                log.info("Value: {}", bookingPropertyMap.get(entry));
+            for (BookingDetailReturnValues entry : bookingList) {
+                log.info("PropertyId: {}", entry.getId());
+                log.info("PropertyModel: {}", entry.getProperty());
+                log.info("BookingModel: {}", entry.getBooking());
             }
 
-            return ResponseEntity.ok(bookingPropertyMap);
+            return ResponseEntity.ok(bookingList);
         }
     }
 
@@ -355,10 +361,13 @@ public class PaymentsController {
      */
     @Data
     @AllArgsConstructor
+    @Getter
+    @Setter
     private class BookingDetailReturnValues {
         Long id;
         PropertyModel property;
         String bookingDate;
+        BookingModel booking;
     }
 
 }

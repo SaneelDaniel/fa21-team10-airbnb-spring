@@ -8,14 +8,14 @@ const reducer = (state, action) => {
       return {
         ...state,
         user: action.payload,
-        loggedIn: true
+        loggedIn: true,
       };
     case 'LOGOUT':
       localStorage.removeItem('User');
       return {
         ...state,
         user: null,
-        loggedIn: false
+        loggedIn: false,
       };
     case 'SET_LOGGEDIN_STATUS':
       return {
@@ -31,6 +31,12 @@ const reducer = (state, action) => {
       return {
         ...state,
         currentProperty: action.payload,
+      };
+
+    case 'SET_CURRENT_ISSUE_PROPERTY':
+      return {
+        ...state,
+        currentIssueProperty: action.payload,
       };
 
     default:

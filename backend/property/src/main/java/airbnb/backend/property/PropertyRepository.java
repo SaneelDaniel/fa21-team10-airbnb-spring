@@ -30,4 +30,20 @@ public interface PropertyRepository extends JpaRepository<PropertyModel, Long> {
     @Query(value = "SELECT p FROM PropertyModel p WHERE p.name = ?1 ")
     Optional<PropertyModel> findByName(@Param("name") String name);
 
+    // find by property id
+    @Query(value = "SELECT p FROM PropertyModel p WHERE p.id = ?1 ")
+    Optional<PropertyModel> findById(@Param("id") Long id);
+
+    // get all properties
+    @Query(value = "SELECT p FROM PropertyModel p")
+    List<PropertyModel> findAll();
+
+    // get all properties that are not sold
+    @Query(value = "SELECT p FROM PropertyModel p WHERE p.sold = false")
+    List<PropertyModel> findAllNotSold();
+
+    // get all properties that are sold
+    @Query(value = "SELECT p FROM PropertyModel p WHERE p.sold = true")
+    List<PropertyModel> findAllSold();
+
 }
