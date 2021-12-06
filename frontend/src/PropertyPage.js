@@ -13,10 +13,7 @@ function PropertyPage() {
   const [paymentClicked, setPaymentClicked] = React.useState(false);
   const history = useHistory();
   const property = context.currentProperty;
-  useEffect(() => {
-    console.log(context);
-    console.log(property, 'Property Page');
-  }, []);
+  useEffect(() => {}, []);
 
   const [userid, setUserid] = React.useState('');
   const [firstname, setFirstname] = React.useState('');
@@ -123,7 +120,7 @@ function PropertyPage() {
         hasErr = true;
       }
 
-      let zipRegex = new RegExp('^\d{5}$');
+      let zipRegex = new RegExp('^d{5}$');
       if (zipRegex.test(zip)) {
         alert(`Please enter the zip code in the format xxxxx ${zip}`);
         hasErr = true;
@@ -165,11 +162,12 @@ function PropertyPage() {
           variant={openPayment ? 'outlined' : 'contained'}
           style={{ cursor: 'pointer', marginTop: '30px', marginBottom: '30px' }}
           onClick={() => {
+              
             setOpenPayment(!openPayment);
           }}
           href=""
         >
-          Checkout
+          {openPayment ? 'Close Checkout' : 'Checkout'}
         </Button>
 
         {openPayment && (

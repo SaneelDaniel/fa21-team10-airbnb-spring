@@ -59,9 +59,6 @@ public class PaymentsController {
     @Autowired
     private BookingRepository bookingDetailRepository;
 
-    @Autowired
-    private tempModelRepository tempRepository;
-
     private static boolean DEBUG = true;
 
     @Value("${cybersource.apihost}")
@@ -86,7 +83,7 @@ public class PaymentsController {
     // a get request to get all the payments
     @GetMapping("/getAllPayments")
     public ResponseEntity<?> getPayments() {
-        return ResponseEntity.ok(tempRepository.findAll());
+        return ResponseEntity.ok(paymentsRepository.findAll());
     }
 
     // post mapping for the payments service
