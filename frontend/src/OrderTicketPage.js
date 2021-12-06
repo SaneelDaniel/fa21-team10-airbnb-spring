@@ -16,9 +16,7 @@ function OrderTicketPage() {
   const property = context.currentIssueProperty.property;
   const booking = context.currentIssueProperty.booking;
 
-  useEffect(() => {
-
-  }, []);
+  useEffect(() => {}, []);
 
   const issueTypeSelected = [
     { value: '1', label: 'Cancel Order' },
@@ -47,6 +45,9 @@ function OrderTicketPage() {
 
     const response = await api.postBookingIssueTicket(data);
 
+    if (response === 200) {
+      history.push('/issues');
+    }
   };
 
   if (!property) {

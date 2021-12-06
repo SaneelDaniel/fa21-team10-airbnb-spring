@@ -143,15 +143,17 @@ function PropertyPage() {
     <div className="property-page">
       <img src={property?.image}></img>
       <div className="property-details">
-        <h3>{property.name}</h3>
-        <p>{property.description}</p>
-        <p>Price: ${property.price}</p>
-        <p>Locatin: {property.city + ', ' + property.state + ', ' + property.zip}</p>
-        <p>{property.type}</p>
-        <p>{property.num_bedrooms} Bedrooms</p>
-        <p>{property.num_bathrooms} Bathrooms</p>
-        <h4>Owner: {property.ownername}</h4>
-        <h4>Owner Email: {property.owneremail}</h4>
+        <div className="property-details-data">
+          <h3>{property.name}</h3>
+          <h3>{property.description}</h3>
+          <h3>Price: ${property.price}</h3>
+          <h3>Location: {property.city + ', ' + property.state + ', ' + property.zip}</h3>
+          <h3>{property.type}</h3>
+          <h3>{property.num_bedrooms} Bedrooms</h3>
+          <h3>{property.num_bathrooms} Bathrooms</h3>
+          <h5>Owner: {property.ownername}</h5>
+          <h5>Owner Email: {property.owneremail}</h5>
+        </div>
       </div>
 
       <div className="property-buttons">
@@ -162,7 +164,6 @@ function PropertyPage() {
           variant={openPayment ? 'outlined' : 'contained'}
           style={{ cursor: 'pointer', marginTop: '30px', marginBottom: '30px' }}
           onClick={() => {
-              
             setOpenPayment(!openPayment);
           }}
           href=""
