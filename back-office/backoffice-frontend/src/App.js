@@ -1,13 +1,20 @@
-import logo from "./logo.svg";
 import "./App.css";
-import Home from "./pages/home";
-import Auth from "./pages/Auth";
+import Auth from "./Auth";
+import Home from "./Home";
+import { Router, Route, Switch } from "react-router";
+import { useContext } from "react";
 
 function App() {
   return (
     <div className="App">
-        <Auth />
-      
+      {/* <Router>
+        <Switch>
+          <Route exact path="/home" component = {Home} />
+          <Route exact path="/login" component = {Auth} />
+      </Switch>
+      </Router> */}
+      <Home />
+    
     </div>
   );
 }
