@@ -12,18 +12,17 @@ import { useContext } from 'react';
 import AppState from './State/AppContext';
 import PropertPage from './PropertyPage';
 import OrderHistory from './OrderHistory';
-import api from "./State/Api"
+import api from './State/Api';
+import OrderTicketPage from './OrderTicketPage';
 function App() {
   const context = useContext(AppState);
 
   useEffect(() => {
     // getPropertyData();
-    api.fetchProperties()
-    .then(data => context.SET_PROPERTY_DATA(data));
+    api.fetchProperties().then((data) => context.SET_PROPERTY_DATA(data));
   }, []);
 
   const getPropertyData = async () => {
-    
     console.log('getPropertyData getting data');
     const response = await axios
       .get('http://localhost:8080/property/all')
@@ -52,6 +51,7 @@ function App() {
           <Route path="/property" component={PropertPage} />
           <Route path="/home" component={Home} />
           <Route path="/orderhistory" component={OrderHistory} />
+          <Route path="/raiseticket" component={OrderTicketPage} />
           <Route path="/">
             <Login />
           </Route>

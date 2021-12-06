@@ -16,6 +16,7 @@ const AppState = (props) => {
     loggedIn: logIn,
     propertyData: [],
     currentProperty: {},
+    currentIssueProperty: {},
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -34,6 +35,13 @@ const AppState = (props) => {
     });
   };
 
+  const SET_CURRENT_ISSUE_PROPERTY = (currentIssueProperty) => {
+    dispatch({
+      type: 'SET_CURRENT_ISSUE_PROPERTY',
+      payload: currentIssueProperty,
+    });
+  };
+
   //Method to set the User
   const SET_USER = (user) => {
     if (user === null) {
@@ -47,9 +55,9 @@ const AppState = (props) => {
 
   const LOGOUT = () => {
     dispatch({
-      type: 'LOGOUT'
-    })
-  }
+      type: 'LOGOUT',
+    });
+  };
 
   return (
     <AppContext.Provider
@@ -58,10 +66,12 @@ const AppState = (props) => {
         user: state.user,
         propertyData: state.propertyData,
         currentProperty: state.currentProperty,
+        currentIssueProperty: state.currentIssueProperty,
         SET_USER: SET_USER,
         SET_PROPERTY_DATA: SET_PROPERTY_DATA,
         SET_CURRENT_PROPERTY: SET_CURRENT_PROPERTY,
-        LOGOUT
+        SET_CURRENT_ISSUE_PROPERTY: SET_CURRENT_ISSUE_PROPERTY,
+        LOGOUT,
       }}
     >
       {props.children}

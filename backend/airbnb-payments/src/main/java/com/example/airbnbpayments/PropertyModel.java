@@ -34,4 +34,5 @@ public class PropertyModel {
     private int num_reviews = 0;
     private int num_bedrooms;
     private int num_bathrooms;
+    private boolean sold = false;
 }
