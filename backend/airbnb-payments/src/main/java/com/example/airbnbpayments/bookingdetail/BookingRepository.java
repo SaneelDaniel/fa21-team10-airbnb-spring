@@ -11,11 +11,11 @@ public interface BookingRepository extends JpaRepository<BookingModel, Long> {
     // @Query("SELECT * FROM BookingModel b WHERE b.userId = :userId")
 
     // get bookingmodel by userId
-    @Query(value = "SELECT * FROM Bookings b WHERE b.user_Id = :userId", nativeQuery = true)
+    @Query(value = "SELECT * FROM bookings b WHERE b.user_Id = :userId", nativeQuery = true)
     List<BookingModel> findByUserId(@Param("userId") Long userId);
 
     // get bookingmodel by bookingId
-    @Query(value = "SELECT * FROM Bookings b WHERE b.bookingId = :bookingId", nativeQuery = true)
+    @Query(value = "SELECT * FROM bookings b WHERE b.bookingId = :bookingId", nativeQuery = true)
     BookingModel findByBookingId(@Param("bookingId") Long bookingId);
 
 }

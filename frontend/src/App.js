@@ -12,11 +12,15 @@ import { useContext } from 'react';
 import AppState from './State/AppContext';
 import PropertPage from './PropertyPage';
 import OrderHistory from './OrderHistory';
+import api from './State/Api';
+import OrderTicketPage from './OrderTicketPage';
+import UserTicketList from './UserTicketList';
 function App() {
   const context = useContext(AppState);
 
   useEffect(() => {
-    getPropertyData();
+    // getPropertyData();
+    api.fetchProperties().then((data) => context.SET_PROPERTY_DATA(data));
   }, []);
 
   const getPropertyData = async () => {
@@ -48,6 +52,9 @@ function App() {
           <Route path="/property" component={PropertPage} />
           <Route path="/home" component={Home} />
           <Route path="/orderhistory" component={OrderHistory} />
+          <Route path="/raiseticket" component={OrderTicketPage} />
+          <Route path="/issues" component={UserTicketList} />
+
           <Route path="/">
             <Login />
           </Route>

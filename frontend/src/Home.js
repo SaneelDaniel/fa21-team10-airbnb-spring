@@ -4,6 +4,7 @@ import Banner from './Banner';
 import Card from './Card';
 import axios from 'axios';
 import AppState from './State/AppContext';
+import api from "./State/Api";
 
 // ES7 snippets to do 'rfce'
 
@@ -15,31 +16,17 @@ function Home() {
 
   useEffect(() => {
     // getPropertyData();
-    console.log('Context', context);
-  }, []);
+    api.fetchProperties()
+    .then(setData)
+    .catch(e => console.log(e));
 
-  const getPropertyData = async () => {
-    console.log('getPropertyData getting data');
-    const response = await axios
-      .get('http://localhost:8080/property/all')
-      .then((res) => {
-        if (res.data != null) {
-          setData(res.data.slice(0, 3));
-          context.SET_PROPERTY_DATA(res.data);
-        } else console.log('error');
-        console.log('DAta', res);
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log('Error in Fetching Properties', err);
-      });
-  };
+  }, []);
 
   return (
     <div className="home">
       <Banner />
 
-      <div className="home__section">
+      {/* <div className="home__section">
         <Card
           src="https://a0.muscache.com/im/pictures/eb9c7c6a-ee33-414a-b1ba-14e8860d59b3.jpg?im_w=720"
           title="Online Experiences"
@@ -55,16 +42,18 @@ function Home() {
           title="Entire homes"
           description="Comfortable private places, with room for friends or family."
         />
-      </div>
+      </div> */}
       <div className="home__section">
-        {data.length > 0 &&
+        {
           data.map((item, idx) => {
             return (
               <Card
+                key={idx}
                 src={item.image}
-                title={item.description}
+                title={item.name}
                 price={`$${item.price}`}
-                description="Superhost with a stunning view of the beachside in Sunny Bournemouth"
+                description={item.description}
+                onClick={() => console.log("HEY")}
               />
             );
           })}

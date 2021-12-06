@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
-
 @Controller
-@CrossOrigin (origins = "*")
+@CrossOrigin(origins = "*")
 @RequestMapping("/helpdesk/request")
 public class RequestController {
     @Autowired
@@ -23,11 +22,11 @@ public class RequestController {
 
     @RequestMapping("/ping")
     public ResponseEntity<?> getAction() {
-        
+
         return ResponseEntity.ok("The server is runnign");
     }
 
-    //Get one specific request
+    // Get one specific request
     @GetMapping("/{id}")
     public ResponseEntity<Optional<RequestModel>> getRequest(@PathVariable("id") Long id) {
         Optional<RequestModel> request = requestRepository.findById(id);
@@ -41,57 +40,68 @@ public class RequestController {
     // Get all requests
     @GetMapping("/all")
     public ResponseEntity<Iterable<RequestModel>> getAllRequests() {
-        List<RequestModel> requests= requestRepository.findAll();
+        List<RequestModel> requests = requestRepository.findAll();
         if (requests.isEmpty()) {
             return ResponseEntity.notFound().build();
         } else {
             return ResponseEntity.ok(requests);
         }
     }
-    
-    //Get all requests for a specific user
+
+    // Get all requests for a specific user
     // @GetMapping("/user/{id}")
-    // public ResponseEntity<Iterable<RequestModel>> getAllRequestsForUser(@RequestParam(value = "id", required = true) Long id) {
-    //     List<RequestModel> requests= requestRepository.findByUserId(user);
-    //     if (requests.isEmpty()) {
-    //         return ResponseEntity.notFound().build();
-    //     } else {
-    //         return ResponseEntity.ok(requests);
-    //     }
+    // public ResponseEntity<Iterable<RequestModel>>
+    // getAllRequestsForUser(@RequestParam(value = "id", required = true) Long id) {
+    // List<RequestModel> requests= requestRepository.findByUserId(user);
+    // if (requests.isEmpty()) {
+    // return ResponseEntity.notFound().build();
+    // } else {
+    // return ResponseEntity.ok(requests);
+    // }
     // }
 
-    //POST requests
-    //Create a new request
+    // POST requests
+    // Create a new request
     @PostMapping("/create")
     public ResponseEntity<?> createRequest(@RequestBody RequestModel request) {
 
-        RequestModel requestCreated =  requestRepository.save(request);
+        RequestModel requestCreated = requestRepository.save(request);
         return ResponseEntity.ok(requestCreated);
     }
 
-    //Resolve a request
+    @GetMapping("/user/{id}")
+    public ResponseEntity<Iterable<RequestModel>> getAllRequestsForUser(@PathVariable("id") Long id) {
+        List<RequestModel> requests = requestRepository.findAllByUserId(id);
+        if (requests.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(requests);
+        }
+    }
+
+    // Resolve a request
     @PostMapping("/resolve")
     public ResponseEntity<RequestModel> resolveRequest(@RequestBody RequestModel request) {
         Optional<RequestModel> requestExists = requestRepository.findById(request.getId());
 
-        if(!requestExists.isPresent()){
+        if (!requestExists.isPresent()) {
             return ResponseEntity.badRequest().build();
         }
         requestExists.get().setRequestStatus(request.getRequestStatus());
         requestRepository.save(requestExists.get());
-        requestExists= requestRepository.findById(request.getId());
-        
+        requestExists = requestRepository.findById(request.getId());
+
         return ResponseEntity.ok(requestExists.get());
 
     }
 
-    //Delete a request
+    // Delete a request
     @DeleteMapping("/delete")
     public ResponseEntity<RequestModel> deleteRequest(@RequestBody RequestModel request) {
-        if(request.getId() == null){
+        if (request.getId() == null) {
             return ResponseEntity.badRequest().build();
         }
-        
+
         Optional<RequestModel> requestExists = requestRepository.findById(request.getId());
         if (requestExists.isPresent()) {
             requestRepository.delete(requestExists.get());

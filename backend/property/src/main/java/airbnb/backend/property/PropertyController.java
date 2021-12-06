@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.validation.BindingResult;
 import lombok.extern.slf4j.Slf4j;
 
@@ -59,7 +60,7 @@ public class PropertyController {
     // get all properties
     @GetMapping("/all")
     public ResponseEntity<List<PropertyModel>> getAllProperties() {
-        List<PropertyModel> properties = propertyRepository.findAll();
+        List<PropertyModel> properties = propertyRepository.findAllNotSold();
         if (properties.isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
@@ -169,6 +170,33 @@ public class PropertyController {
         propertyExists = propertyRepository.findByName(property.getName());
 
         return ResponseEntity.ok(propertyExists.get());
+    }
+
+    // get method, to update the sold status by property id
+    @GetMapping("/sold/{id}")
+    public ResponseEntity<PropertyModel> updateSoldStatus(@PathVariable Long id) {
+
+        Optional<PropertyModel> property = propertyRepository.findById(id);
+        if (property.isPresent()) {
+            property.get().setSold(true);
+            propertyRepository.save(property.get());
+            return ResponseEntity.ok(property.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // get method, to get all sold properties
+    @GetMapping("/allsold")
+    public ResponseEntity<List<PropertyModel>> getAllSoldProperties() {
+        List<PropertyModel> properties = propertyRepository.findAllSold();
+        RestTemplate restTemplate = new RestTemplate();
+        List<PropertyModel> propertiesWithSoldStatus = new ArrayList<>();
+        if (properties.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(properties);
+        }
     }
 
     // delete a property

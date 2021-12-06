@@ -1,15 +1,29 @@
-import React, { useEffect } from 'react';
-import { Button } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import { Button, Select } from '@material-ui/core';
 import AppState from './State/AppContext';
 import axios from 'axios';
-import SearchResult from './SearchResult';
-
+import OrderProductResult from './OrderProductResult';
+import api from './State/Api';
+import Modal from 'react-bootstrap/Modal';
+import { useHistory } from 'react-router';
+// import Select from 'react-select';
 function OrderHistory() {
   const context = React.useContext(AppState);
+  const uID = context.user ? context.user.id : '';
+  const [data, setData] = useState([]);
+  const [show, setShow] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     // Get all sucessful orders
-    getOrderhistory();
+
+    api
+      .getOrderHistory('02')
+      .then((result) => {
+        console.log(result);
+        setData(result);
+      })
+      .catch((e) => console.log(e));
   }, []);
 
   const getOrderhistory = async () => {
@@ -27,27 +41,44 @@ function OrderHistory() {
 
   return (
     <div className="order-history">
-      {context.propertyData.length != 0
-        ? context.propertyData.map((order) => {
-            return (
-              <div className="order-history-item">
-                <Button variant="contained" color="primary">
-                  Raise an issue
-                </Button>
-                <SearchResult
-                  key={order.id}
-                  img={order.image}
-                  location={`${order.city}, ${order.state}, ${order.zip}`}
-                  title={order.name}
-                  description={order.description}
-                  star={4.73}
-                  price={`You've paid $${order.price}`}
-                  propertyObject={order}
-                />
-              </div>
-            );
-          })
-        : null}
+      {data.map((order) => {
+        return (
+          <div className="order-history-item" key={order.id}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <h3>Order: {order.id}</h3>
+              <h3>Order Date: {order.bookingDate}</h3>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={async () => {
+                  await context.SET_CURRENT_ISSUE_PROPERTY(order);
+                  history.push(`/raiseticket`);
+                }}
+              >
+                Raise an issue
+              </Button>
+            </div>
+
+            <OrderProductResult
+              key={order.id}
+              img={order.property.image}
+              location={`${order.property.city}, ${order.property.state}, ${order.property.zip}`}
+              title={order.property.name}
+              description={order.property.description}
+              star={4.73}
+              price={`You've paid $${order.property.price}`}
+              propertyObject={order}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }

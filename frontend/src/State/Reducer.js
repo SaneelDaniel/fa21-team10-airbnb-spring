@@ -3,19 +3,19 @@ const reducer = (state, action) => {
 
   switch (action.type) {
     case 'SET_USER':
-      localStorage.setItem('User', JSON.stringify(action.payload));
-      console.log('Local User Info', localStorage.getItem('User'));
+      localStorage.setItem('AirbnbUser', JSON.stringify(action.payload));
+      console.log('Local User Info', localStorage.getItem('AirbnbUser'));
       return {
         ...state,
         user: action.payload,
-        loggedIn: true
+        loggedIn: true,
       };
     case 'LOGOUT':
-      localStorage.removeItem('User');
+      localStorage.removeItem('AirbnbUser');
       return {
         ...state,
         user: null,
-        loggedIn: false
+        loggedIn: false,
       };
     case 'SET_LOGGEDIN_STATUS':
       return {
@@ -31,6 +31,12 @@ const reducer = (state, action) => {
       return {
         ...state,
         currentProperty: action.payload,
+      };
+
+    case 'SET_CURRENT_ISSUE_PROPERTY':
+      return {
+        ...state,
+        currentIssueProperty: action.payload,
       };
 
     default:

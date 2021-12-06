@@ -17,7 +17,6 @@ services:
     restart: always
 
   users:
-    #image: rheadash/spring-users:v1
     image: qnguyen3411/airbnb-backend:latest
     depends_on:
     - mysql    

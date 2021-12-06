@@ -16,7 +16,7 @@ spec:
       containers:
       - env:
         - name: MYSQL_HOST
-          value: 10.4.0.7
+          value: mysql-service
         image: qnguyen3411/airbnb-backend:latest
         name: backend-auth
         ports:
