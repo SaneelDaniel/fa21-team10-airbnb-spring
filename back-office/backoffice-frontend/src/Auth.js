@@ -1,29 +1,27 @@
-import React, { Component, useState } from "react";
-import PropTypes from "prop-types";
-import axios from "axios";
+import React, { useContext, useState } from "react";
+import api from './State/Api';
+import AppContext from './State/AppContext';
+import { useHistory } from "react-router-dom";
 
 export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [user, setUser] = useState("");
+  const history = useHistory();
 
-  const login = async (e) => {
-    // e.preventDefault();
-    console.log("Login Req: ", email, password);
-    try {
-      const res = await axios.post(
-        "http://34.134.225.229/auth/api/auth/login",
-        {
-          headers: { "Access-Control-Allow-Origin": "*" },
-        },
-        {
-          email,
-          password,
-        }
-      );
-      console.log(res);
-    } catch (error) {}
-  };
+const login = (e) => {
+  e.preventDefault();
+  api.login(email, password)
+    .then(user => 
+      {
+        setUser(user);
+        console.log(user);
+        if (user) {
+          history.push("/");
+      }
+    })
+    .catch(err => window.alert(err.message));
+};
   return (
     <div>
       <h1>Auth Page</h1>
@@ -45,7 +43,6 @@ export default function AuthPage() {
         onClick={(e) => {
           login(e);
         }}
-        onP
       >
         Login
       </button>

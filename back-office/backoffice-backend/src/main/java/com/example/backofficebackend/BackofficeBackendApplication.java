@@ -1,13 +1,13 @@
-// package com.example.backofficebackend;
+package com.example.backofficebackend;
 
-// import org.springframework.boot.SpringApplication;
-// import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-// @SpringBootApplication
-// public class BackofficeBackendApplication {
+@SpringBootApplication
+public class BackofficeBackendApplication {
 
-// 	public static void main(String[] args) {
-// 		SpringApplication.run(BackofficeBackendApplication.class, args);
-// 	}
+	public static void main(String[] args) {
+		SpringApplication.run(BackofficeBackendApplication.class, args);
+	}
 
-// }
+}
