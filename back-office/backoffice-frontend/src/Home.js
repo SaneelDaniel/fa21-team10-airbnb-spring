@@ -1,4 +1,4 @@
-import React, { Component, forwardRef, useEffect } from "react";
+import React, { Component, forwardRef, useEffect, useState } from "react";
 import MaterialTable from "material-table";
 import api from "./State/Api";
 // import { Link } from "react-router-dom";
@@ -45,38 +45,29 @@ const columns = [
 const Home = () => {
   const reqTypes = ["Cancel_Order", "Contact_Admin"];
   const reqStatus = ["Pending", "Approved", "Rejected"];
-  const [state, setState] = React.useState(null);
-  const [cancelData, setCancelData] = React.useState([]);
-  const [contactData, setContactData] = React.useState([]);
+  const [data, setData]  = useState([]);
 
   useEffect(async () => {
     api.getIssues().then((response) => {
-      setState(response);
-      localStorage.setItem("issues", JSON.stringify(response));
+      console.log(response);
+      setData(response);
     });
-    filterContent();
   }, []);
 
-  const filterContent = async () => {
-    const data = JSON.parse(localStorage.getItem("issues"));
+  const resolveRequest = (id) => {
+    const idx = data.findIndex(item => item.id == id);
+    if (idx > -1) {
+   
+      let dataCopy = [...data];
+      dataCopy[idx] = {
+        ...data[idx],
+        requestStatus: "Resolved"
+      }
+      setData(dataCopy)
+    }
+  }
 
-    console.log("filter me", data);
-    var filteredCancelData = await data.filter((item) => {
-      return (
-        item.requestType === reqTypes[0] && item.requestStatus != "Resolved"
-      );
-    });
-
-    var filteredContactData = await data.filter((item) => {
-      return (
-        item.requestType === reqTypes[1] && item.requestStatus != "Resolved"
-      );
-    });
-
-    await setCancelData(filteredCancelData);
-    await setContactData(filteredContactData);
-    console.log("cancel data", filteredCancelData, "contact data", contactData);
-  };
+  
   const resolve = forwardRef(
     (props, ref) => (
       console.log("Button Props, and ref", props, ref),
@@ -100,7 +91,7 @@ const Home = () => {
             <h1>Cancellation Requests</h1>
             <MaterialTable
               title="Cancel Order Requests"
-              data={cancelData}
+              data={data.filter(item => item.requestType === reqTypes[0] && item.requestStatus != "Resolved")}
               columns={columns}
               style={{ margin: "20px" }}
               actions={[
@@ -108,13 +99,8 @@ const Home = () => {
                   icon: resolve,
                   tooltip: "Resolve Ticket",
                   onClick: async (event, rowData) => {
-                    rowData.requestStatus = "Resolved";
-                    delete rowData.tableData;
-                    console.log("Sending This", rowData);
                     var resp = await api.resolveIssue(rowData);
-                    if (resp) {
-                      filterContent();
-                    }
+                    resolveRequest(rowData.id);
                   },
                 },
               ]}
@@ -125,7 +111,7 @@ const Home = () => {
             <h1>Admin Requests</h1>
             <MaterialTable
               title="Contact Admin Requests"
-              data={contactData}
+              data={data.filter(item => item.requestType === reqTypes[1] && item.requestStatus != "Resolved")}
               columns={columns}
               style={{ margin: "20px" }}
               actions={[
@@ -134,13 +120,12 @@ const Home = () => {
                   tooltip: "Resolve Ticket",
 
                   onClick: async (event, rowData) => {
-                    rowData.requestStatus = "Resolved";
-                    delete rowData.tableData;
-                    console.log("Sending This", rowData);
+                    // rowData.requestStatus = "Resolved";
+                    // delete rowData.tableData;
+                    // console.log("Sending This", rowData);
                     var resp = await api.resolveIssue(rowData);
-                    if (resp) {
-                      filterContent();
-                    }
+                    resolveRequest(rowData.id);
+
                   },
                 },
               ]}

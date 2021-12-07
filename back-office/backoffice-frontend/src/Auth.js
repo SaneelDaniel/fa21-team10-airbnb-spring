@@ -15,9 +15,8 @@ export default function AuthPage() {
       .login(email, password)
       .then((user) => {
         setUser(user);
-        console.log(user);
         if (user) {
-          history.push("/");
+          history.push("/home");
         }
       })
       .catch((err) => window.alert(err.message));

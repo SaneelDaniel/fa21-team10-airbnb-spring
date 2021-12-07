@@ -14,16 +14,20 @@ function OrderHistory() {
   const [show, setShow] = useState(false);
   const history = useHistory();
 
+  console.log(context);
+
   useEffect(() => {
     // Get all sucessful orders
+    if (context.loggedIn){
 
-    api
-      .getOrderHistory('02')
-      .then((result) => {
-        console.log(result);
-        setData(result);
-      })
-      .catch((e) => console.log(e));
+      api
+        .getOrderHistory(uID)
+        .then((result) => {
+          
+          setData(result);
+        })
+        .catch((e) => console.log(e));
+    }
   }, []);
 
   const getOrderhistory = async () => {
@@ -38,6 +42,10 @@ function OrderHistory() {
         console.log('Error in getting order history' + err);
       });
   };
+
+  if (!context.loggedIn) {
+    history.push('/');
+  }
 
   return (
     <div className="order-history">

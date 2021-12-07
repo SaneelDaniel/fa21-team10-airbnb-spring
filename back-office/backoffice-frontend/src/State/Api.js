@@ -1,9 +1,9 @@
 import axios from "axios";
 
-//const authEndpoint = process.env.REACT_APP_AUTH_ENDPOINT;
+const authEndpoint = process.env.REACT_APP_AUTH_ENDPOINT;
 const issuesEndpoint = process.env.REACT_APP_ISSUES_ENDPOINT;
 export const login = async (username, password) => {
-  const resp = await axios.post(`http://localhost:8081/authenticate`, {
+  const resp = await axios.post(authEndpoint + `authenticate`, {
     username,
     password,
   });
@@ -14,8 +14,7 @@ export const login = async (username, password) => {
 };
 
 export const getIssues = async (token) => {
-  const resp = await axios.get(`http://localhost:8084/helpdesk/request/all`);
-  console.log("Issues Received", resp);
+  const resp = await axios.get(issuesEndpoint  + `all`);
   if (resp.status !== 200) {
     throw Error;
   }
@@ -25,8 +24,8 @@ export const getIssues = async (token) => {
 export const resolveIssue = async (issueObj) => {
   console.log("Issue Object", issueObj);
   const resp = await axios.post(
-    `http://localhost:8084/helpdesk/request/resolve`,
-    issueObj
+    issuesEndpoint + `resolve`,
+    {...issueObj, requestStatus: "Resolved"}
   );
   if (resp.status !== 200) {
     throw Error;

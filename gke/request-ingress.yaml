@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: payments
+  name: helpdesk
   annotations:
     kubernetes.io/ingress.class: kong
 spec:

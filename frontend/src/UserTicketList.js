@@ -38,13 +38,22 @@ const columns = [
 function UserTicketList() {
   const [requestData, setRequestData] = useState();
   const context = useContext(AppState);
+  const uID = context.user ? context.user.id : '';
+  const history = useHistory();
 
   useEffect(() => {
-    api.getIssueRequestsByUserId('02').then((res) => {
+    if (!context.loggedIn) {return;}
+
+    api.getIssueRequestsByUserId(uID).then((res) => {
       console.log('Issue Response', res);
       setRequestData(res);
     });
   }, []);
+
+  if (!context.loggedIn) {
+    history.push('/');
+  }
+
   return (
     <>
       {requestData?.length > 0 ? (

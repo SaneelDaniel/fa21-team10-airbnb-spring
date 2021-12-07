@@ -9,11 +9,12 @@ import { useHistory } from 'react-router';
 
 function PropertyPage() {
   const context = React.useContext(AppState);
+  const uID = context.user ? context.user.id : '';
+
   const [openPayment, setOpenPayment] = React.useState(false);
   const [paymentClicked, setPaymentClicked] = React.useState(false);
   const history = useHistory();
   const property = context.currentProperty;
-  useEffect(() => {}, []);
 
   const [userid, setUserid] = React.useState('');
   const [firstname, setFirstname] = React.useState('');
@@ -39,7 +40,7 @@ function PropertyPage() {
       return;
     } else {
       const tempPaymentModel = {
-        userid: '01',
+        userid: uID,
         firstname: firstname,
         lastname: lastname,
         address: address,
@@ -137,6 +138,10 @@ function PropertyPage() {
 
   if (!property) {
     return <h1>Unavailable</h1>;
+  }
+
+  if (!context.loggedIn) {
+    history.push('/');
   }
 
   return (
