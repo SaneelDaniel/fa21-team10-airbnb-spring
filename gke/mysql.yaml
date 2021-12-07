@@ -7,6 +7,7 @@ data:
     CREATE DATABASE IF NOT EXISTS `airbnb`;
     CREATE DATABASE IF NOT EXISTS `airbnbProperties`;
     CREATE DATABASE IF NOT EXISTS `airbnbPayment`;
+    CREATE DATABASE IF NOT EXISTS `airbnbRequest`;
 
 ---
 apiVersion: apps/v1
