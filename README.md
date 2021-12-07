@@ -30,6 +30,7 @@ We have used the following technologies:
 
 ![Architecture Diagram](images/OverallArchitecture.png)
 
+
 ## Project Notes
 
 ### Functional Requirements
@@ -196,3 +197,4 @@ All team members were committing work to GitHub.
 <br/>
 
 ## Project Links
+
