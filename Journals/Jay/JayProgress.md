@@ -28,7 +28,7 @@
 ## Week 4
 
 - Integrated the backoffice apis with the frontend
-- Worked with other team members to integrate the frontoffice with front apis
+- Worked with other team members to integrate the frontend with frontoffice apis
 - Created docker images and deploment files for the project
 - Deployed the project to the GCP
 
