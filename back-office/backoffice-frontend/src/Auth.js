@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
-import api from './State/Api';
-import AppContext from './State/AppContext';
+import api from "./State/Api";
+import AppContext from "./State/AppContext";
 import { useHistory } from "react-router-dom";
 
 export default function AuthPage() {
@@ -9,22 +9,22 @@ export default function AuthPage() {
   const [user, setUser] = useState("");
   const history = useHistory();
 
-const login = (e) => {
-  e.preventDefault();
-  api.login(email, password)
-    .then(user => 
-      {
+  const login = (e) => {
+    e.preventDefault();
+    api
+      .login(email, password)
+      .then((user) => {
         setUser(user);
         console.log(user);
         if (user) {
           history.push("/");
-      }
-    })
-    .catch(err => window.alert(err.message));
-};
+        }
+      })
+      .catch((err) => window.alert(err.message));
+  };
   return (
-    <div>
-      <h1>Auth Page</h1>
+    <div style={{ alignItems: "center", margin: "30px" }}>
+      <h1>Backoffice Login</h1>
       <input
         type="text"
         placeholder="username"
