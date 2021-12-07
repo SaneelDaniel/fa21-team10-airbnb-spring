@@ -30,10 +30,9 @@ We have used the following technologies:
 
 ![Architecture Diagram](images/OverallArchitecture.png)
 
-
 ## Project Notes
 
-### Functional Requirements
+### 1. Functional Requirements
 
 #### Front Office Portal:
 
@@ -52,7 +51,7 @@ We have used the following technologies:
 
   - Viewing & Resolving Customer Queries
 
-### Technical Requirements
+### 2. Technical Requirements
 
 The application was implemented in Java Spring and be deployable as Docker Containers on Google Cloud VM's and/or Kubernetes Engine (GKE).
 
@@ -92,7 +91,7 @@ All team members were committing work to GitHub.
   - **Credit Card Payments:** Support
     Integration with CyberSource Payment Gateway
 
-### Project Screenshots / Demo
+### 3. Project Screenshots / Demo
 
 #### Front Office Portal
 
@@ -190,11 +189,15 @@ All team members were committing work to GitHub.
 
    <br/>
 
-#### Video Demo
+### 4. Video Demo
 
-... still need to record it
+[Demo Link](https://sjsu.zoom.us/rec/share/031lGqLKlejNW9mBYWNKV3QjLjHYQxJBCKB2LlM7GxliLRirXXiCc5VJDlZfaddw.GXGLLL1eHrChLxBq?startTime=1638852393000)
+
+```
+Demo Password:
+uB85+qT\*
+```
 
 <br/>
 
-## Project Links
-
+## Additional Project Links
